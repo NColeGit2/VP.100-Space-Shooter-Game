@@ -15,9 +15,31 @@ screen_height=750
 
 #color code constants 
 GREEN = (0, 255, 0)
+GREY = (211, 211, 211)
+
+#classes
+class SpaceShip:
+  def __init__(self, width, height):
+    """init vars"""
+    self._height=height
+    self._width=width
+
+  #getters & setters
+  def setHeight(self, height):
+    self._height=height
+  def getHeight(self):
+    return(self._height)
+  
+  def setWidth(self, width):
+    self._width=width
+  def getWidth(self):
+    return(self._width)
 
 #other variable initializers (fonts, text, images, etc)
-
+plrSpaceShip=SpaceShip(20, 50)
+#functions for game
+def drawPlayer():
+  pygame.draw.rect(screen, GREY, [screen_width/2, screen_height-plrSpaceShip.getHeight(), plrSpaceShip.getWidth(), plrSpaceShip.getHeight()])
 
 #create a screen with dimensions 
 screen = pygame.display.set_mode((screen_width, screen_height)) 
@@ -47,12 +69,13 @@ while keep_playing==True:
   pressed = pygame.key.get_pressed()
   if pressed[pygame.K_x]:
     print("close")
-    pygame.quit()
-    quit()
+    keep_playing=False
+    
   #add your mouse controls here
 
   #all items drawn to the screen go here
   pygame.draw.line(screen, GREEN, [0, 0], [100,100], 5)
+  drawPlayer()
 
   #This function call updates the screen
   pygame.display.update()
