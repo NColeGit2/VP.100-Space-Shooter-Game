@@ -37,10 +37,19 @@ class SpaceShip:
 
 #other variable initializers (fonts, text, images, etc)
 plrSpaceShip=SpaceShip(20, 50)
+shipX=screen_width/2
 #functions for game
-def drawPlayer():
-  pygame.draw.rect(screen, GREY, [screen_width/2, screen_height-plrSpaceShip.getHeight(), plrSpaceShip.getWidth(), plrSpaceShip.getHeight()])
-
+def drawPlayer(x):
+  pygame.draw.rect(screen, GREY, [x, screen_height-plrSpaceShip.getHeight(), plrSpaceShip.getWidth(), plrSpaceShip.getHeight()])
+def movePlayer(direction, currentX):
+  speed=5
+  if currentX < screen_width-plrSpaceShip.getWidth():
+    if direction == 'r':
+      currentX+=speed
+  if currentX > 0:
+    if direction == 'l':
+      currentX-=speed 
+  return(currentX)
 #create a screen with dimensions 
 screen = pygame.display.set_mode((screen_width, screen_height)) 
 
@@ -70,12 +79,19 @@ while keep_playing==True:
   if pressed[pygame.K_x]:
     print("close")
     keep_playing=False
+  if pressed[pygame.K_LEFT]:
+    #print('Going left')
+    shipX=movePlayer('l', shipX)
+  if pressed[pygame.K_RIGHT]:
+    #print('Going right')
+    shipX=movePlayer('r', shipX)
     
   #add your mouse controls here
 
   #all items drawn to the screen go here
+  screen.fill((0, 0, 0))
   pygame.draw.line(screen, GREEN, [0, 0], [100,100], 5)
-  drawPlayer()
+  drawPlayer(shipX)
 
   #This function call updates the screen
   pygame.display.update()
