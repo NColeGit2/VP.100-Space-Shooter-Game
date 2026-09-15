@@ -1,5 +1,5 @@
-#import the pygame library a
 import pygame 
+import random
 
 #anchor the pygame screen so you see it in codio.
 #Click on the arrow in the upper left corner to display in a new browser tab.
@@ -34,13 +34,48 @@ class SpaceShip:
     self._width=width
   def getWidth(self):
     return(self._width)
+  
+class Bullet:
+  def __init__(self, radius, x, y):
+    """init vars"""
+    self._radius=radius
+    self._x=x
+    self._y=y
+
+  #getters & setters
+  def setRadius(self, radius):
+    self._radius=radius
+  def getRadius(self):
+    return(self._radius)
+  
+  def setX(self, x):
+    self._x=x
+  def getX(self):
+    return(self._x)
+  
+  def setY(self, y):
+    self._y=y
+  def getY(self):
+    return(self._y)
+  
+  #a
+  def drawBullet(self):
+    pygame.draw.circle(screen, GREEN, [self._x, 500], self._radius)
+
+  
+  #
 
 #other variable initializers (fonts, text, images, etc)
+
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
+
+bullets=[]
+
 #functions for game
 def drawPlayer(x):
   pygame.draw.rect(screen, GREY, [x, screen_height-plrSpaceShip.getHeight(), plrSpaceShip.getWidth(), plrSpaceShip.getHeight()])
+
 def movePlayer(direction, currentX):
   speed=5
   if currentX < screen_width-plrSpaceShip.getWidth():
@@ -50,6 +85,16 @@ def movePlayer(direction, currentX):
     if direction == 'l':
       currentX-=speed 
   return(currentX)
+
+def createBullets(currentX):
+  print('circle')
+  newBullet=Bullet(40, currentX, 0)
+  
+  print('circle2')
+
+def updateBullets():
+  return
+
 #create a screen with dimensions 
 screen = pygame.display.set_mode((screen_width, screen_height)) 
 
@@ -79,12 +124,17 @@ while keep_playing==True:
   if pressed[pygame.K_x]:
     print("close")
     keep_playing=False
+  ##movement
   if pressed[pygame.K_LEFT]:
     #print('Going left')
     shipX=movePlayer('l', shipX)
   if pressed[pygame.K_RIGHT]:
     #print('Going right')
     shipX=movePlayer('r', shipX)
+  ##shoot
+  if pressed[pygame.K_SPACE]:
+    createBullets(shipX)
+
     
   #add your mouse controls here
 
