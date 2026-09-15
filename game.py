@@ -1,4 +1,4 @@
-#import the pygame library 
+#import the pygame library a
 import pygame 
 
 #anchor the pygame screen so you see it in codio.
