@@ -58,14 +58,19 @@ class Bullet:
   def getY(self):
     return(self._y)
   
-  #a
+  #bullet functions
   def drawBullet(self):
-    pygame.draw.circle(screen, GREEN, [self._x, 500], self._radius)
-
-  
-  #
+    pygame.draw.circle(screen, GREEN, [self._x, self._y], self._radius)
 
 #other variable initializers (fonts, text, images, etc)
+
+canShoot=True
+flag2=0
+bulletID=0
+
+#alterable variables
+reloadTime=30
+bulletRadius=10
 
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
@@ -88,12 +93,18 @@ def movePlayer(direction, currentX):
 
 def createBullets(currentX):
   print('circle')
-  newBullet=Bullet(40, currentX, 0)
-  
+  newBullet=Bullet(bulletRadius, currentX, screen_height-plrSpaceShip.getHeight()-bulletRadius)
+  bullets.append(newBullet)
   print('circle2')
 
 def updateBullets():
-  return
+  for bullet in bullets:
+    if bullet.getY() > 0-bulletRadius:
+      bullet.setY(bullet.getY()-10)
+    else:
+      print('bullet dead')
+      bullets.remove(bullet)
+    bullet.drawBullet()
 
 #create a screen with dimensions 
 screen = pygame.display.set_mode((screen_width, screen_height)) 
@@ -110,6 +121,13 @@ clock = pygame.time.Clock()
 
 #variable to control the game loop 
 keep_playing=True 
+
+
+
+#OTHER STUFF ABOOOVE
+#GAME LOOP BELOOOW
+
+
 
 #Game Loop - needed to keep updating and redrawing the screen 
 while keep_playing==True: 
@@ -132,8 +150,19 @@ while keep_playing==True:
     #print('Going right')
     shipX=movePlayer('r', shipX)
   ##shoot
-  if pressed[pygame.K_SPACE]:
-    createBullets(shipX)
+  if canShoot:
+    if pressed[pygame.K_SPACE]:
+      canShoot=False
+      createBullets(shipX+(plrSpaceShip.getWidth()/2))  #gets the bullet centered on the ship
+  else:
+    #waits countdown, 60 frames is a second
+    if flag2 < reloadTime:
+      print(flag2)
+      flag2+=1
+    else:
+      print("Can shoot")
+      flag2=0
+      canShoot=True
 
     
   #add your mouse controls here
@@ -143,12 +172,14 @@ while keep_playing==True:
   pygame.draw.line(screen, GREEN, [0, 0], [100,100], 5)
   drawPlayer(shipX)
 
+
+  
+  updateBullets()
   #This function call updates the screen
   pygame.display.update()
 
   #sets the frame rate
   clock.tick(60)
-
 #quits the pygame module 
 pygame.quit() 
 quit() 
