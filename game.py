@@ -62,6 +62,12 @@ class Bullet:
   def drawBullet(self):
     pygame.draw.circle(screen, GREEN, [self._x, self._y], self._radius)
 
+  class Enemy:
+    def __init__(self, x, y):
+      self._x=x
+      self._y=y
+      
+
 #other variable initializers (fonts, text, images, etc)
 
 canShoot=True
@@ -69,8 +75,9 @@ flag2=0
 bulletID=0
 
 #alterable variables
-reloadTime=30
+reloadTime=20
 bulletRadius=10
+bulletSpeed=10
 
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
@@ -100,11 +107,17 @@ def createBullets(currentX):
 def updateBullets():
   for bullet in bullets:
     if bullet.getY() > 0-bulletRadius:
-      bullet.setY(bullet.getY()-10)
+      bullet.setY(bullet.getY()-bulletSpeed)
     else:
       print('bullet dead')
       bullets.remove(bullet)
     bullet.drawBullet()
+
+def spawnEnemy():
+  return
+
+def updateEnemies():
+  return
 
 #create a screen with dimensions 
 screen = pygame.display.set_mode((screen_width, screen_height)) 
@@ -173,7 +186,6 @@ while keep_playing==True:
   drawPlayer(shipX)
 
 
-  
   updateBullets()
   #This function call updates the screen
   pygame.display.update()
