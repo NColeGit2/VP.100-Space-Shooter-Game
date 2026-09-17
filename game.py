@@ -96,22 +96,23 @@ class Enemy:
       self._canMove=True
 
   def drawEnemy(self):
-    pygame.draw.rect(screen, RED, [self._startPos, self._y, enemySize, enemySize])
+    pygame.draw.rect(screen, RED, [self._x, self._y, enemySize, enemySize])
       
 
 #other variable initializers (fonts, text, images, etc)
 
-canShoot=True
-flag2=0
-bulletID=0
+
 
 #alterable variables
 reloadTime=20
 bulletRadius=10
 bulletSpeed=10
 enemySize=40
-enemySpawnCooldown=60
-enemyMoveCooldown=30
+enemySpawnCooldown=300
+enemyMoveCooldown=0
+speed=5
+enemySpeed=5
+enemyXRange=10
 
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
@@ -119,12 +120,16 @@ shipX=screen_width/2
 bullets=[]
 enemies=[]
 
+canShoot=True
+flag=0
+enemyFlag=enemySpawnCooldown
+
 #functions for game
 def drawPlayer(x):
   pygame.draw.rect(screen, GREY, [x, screen_height-plrSpaceShip.getHeight(), plrSpaceShip.getWidth(), plrSpaceShip.getHeight()])
 
 def movePlayer(direction, currentX):
-  speed=5
+  
   if currentX < screen_width-plrSpaceShip.getWidth():
     if direction == 'r':
       currentX+=speed
@@ -155,10 +160,18 @@ def spawnEnemy():
 def updateEnemies():
   for enemy in enemies:
     enemy.countdown()
-    if enemy.getCanMove():
-      enemy.setCanMove(False)
-      enemy.setMoveCD(enemyMoveCooldown)
-      enemy.setY(enemy.getY()+50)
+    if enemy.getY() > screen_height+enemySize:
+      enemies.remove(enemy)
+    else:
+      if enemy.getCanMove():
+        enemy.setCanMove(False)
+        enemy.setMoveCD(enemyMoveCooldown)
+        
+        xMovement=random.randint(-enemyXRange, enemyXRange)
+        if enemy.getX()+xMovement > 0 or enemy.getX()+xMovement < screen_width-enemySize:
+          enemy.setX(enemy.getX()+xMovement)
+        enemy.setY(enemy.getY()+enemySpeed)
+
     enemy.drawEnemy()
     print(enemy.getY())
 
@@ -183,7 +196,6 @@ keep_playing=True
 #OTHER STUFF ABOOOVE
 #GAME LOOP BELOOOW
 
-spawnEnemy()
 
 #Game Loop - needed to keep updating and redrawing the screen 
 while keep_playing==True: 
@@ -212,17 +224,27 @@ while keep_playing==True:
       createBullets(shipX+(plrSpaceShip.getWidth()/2))  #gets the bullet centered on the ship
   else:
     #waits countdown, 60 frames is a second
-    if flag2 < reloadTime:
-      print(flag2)
-      flag2+=1
+    if flag < reloadTime:
+      print(flag)
+      flag+=1
     else:
       print("Can shoot")
-      flag2=0
+      flag=0
       canShoot=True
 
     
   #add your mouse controls here
 
+
+  #spawn enemy loop
+  if enemyFlag > 0:
+    enemyFlag-=1
+    #print(enemySpawnCooldown)
+    #print(enemyFlag)
+  else: 
+    spawnEnemy()
+    enemyFlag=enemySpawnCooldown
+  
   #all items drawn to the screen go here
   screen.fill((0, 0, 0))
   pygame.draw.line(screen, GREEN, [0, 0], [100,100], 5)
