@@ -15,6 +15,7 @@ screen_height=750
 
 #color code constants 
 GREEN = (0, 255, 0)
+RED = (255, 0, 0)
 GREY = (211, 211, 211)
 
 #classes
@@ -57,15 +58,45 @@ class Bullet:
     self._y=y
   def getY(self):
     return(self._y)
-  
   #bullet functions
   def drawBullet(self):
     pygame.draw.circle(screen, GREEN, [self._x, self._y], self._radius)
 
-  class Enemy:
-    def __init__(self, x, y):
-      self._x=x
-      self._y=y
+class Enemy:
+  def __init__(self, y):
+    self._startPos=random.randint(0, screen_width-enemySize)
+    self._x=self._startPos
+    self._y=y
+    self._canMove=False
+    self._moveCD=10
+  
+  def setX(self, x):
+    self._x=x
+  def setY(self, y):
+    self._y=y
+  def getX(self):
+    return(self._x)
+  def getY(self):
+    return(self._y)
+  
+  def setCanMove(self, data):
+    self._canMove=data
+  def getCanMove(self):
+    return(self._canMove)
+  
+  def setMoveCD(self, data):
+    self._moveCD=data
+  def getMoveCD(self):
+    return(self._moveCD)
+
+  def countdown(self):
+    if self._moveCD > 0:
+      self._moveCD-=1
+    else:
+      self._canMove=True
+
+  def drawEnemy(self):
+    pygame.draw.rect(screen, RED, [self._startPos, self._y, enemySize, enemySize])
       
 
 #other variable initializers (fonts, text, images, etc)
@@ -78,11 +109,15 @@ bulletID=0
 reloadTime=20
 bulletRadius=10
 bulletSpeed=10
+enemySize=40
+enemySpawnCooldown=60
+enemyMoveCooldown=30
 
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
 
 bullets=[]
+enemies=[]
 
 #functions for game
 def drawPlayer(x):
@@ -114,10 +149,18 @@ def updateBullets():
     bullet.drawBullet()
 
 def spawnEnemy():
-  return
+  newEnemy=Enemy(0)
+  enemies.append(newEnemy)
 
 def updateEnemies():
-  return
+  for enemy in enemies:
+    enemy.countdown()
+    if enemy.getCanMove():
+      enemy.setCanMove(False)
+      enemy.setMoveCD(enemyMoveCooldown)
+      enemy.setY(enemy.getY()+50)
+    enemy.drawEnemy()
+    print(enemy.getY())
 
 #create a screen with dimensions 
 screen = pygame.display.set_mode((screen_width, screen_height)) 
@@ -140,7 +183,7 @@ keep_playing=True
 #OTHER STUFF ABOOOVE
 #GAME LOOP BELOOOW
 
-
+spawnEnemy()
 
 #Game Loop - needed to keep updating and redrawing the screen 
 while keep_playing==True: 
@@ -186,7 +229,11 @@ while keep_playing==True:
   drawPlayer(shipX)
 
 
+  #enemy stuff
+
+
   updateBullets()
+  updateEnemies()
   #This function call updates the screen
   pygame.display.update()
 
