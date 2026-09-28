@@ -42,6 +42,7 @@ class Bullet:
     self._radius=radius
     self._x=x
     self._y=y
+    self._hitbox=pygame.Rect(self._x, self._y, self._radius*2, self._radius*2)
 
   #getters & setters
   def setRadius(self, radius):
@@ -58,9 +59,17 @@ class Bullet:
     self._y=y
   def getY(self):
     return(self._y)
+  
+  def setHitbox(self, hitbox):
+    self._hitbox=hitbox
+  def getHitbox(self):
+    return(self._hitbox)
   #bullet functions
+  def updateHitbox(self):
+    self._hitbox=pygame.Rect(self._x, self._y, self._radius*2, self._radius*2)
+
   def drawBullet(self):
-    pygame.draw.circle(screen, GREEN, [self._x, self._y], self._radius)
+    return(pygame.draw.circle(screen, GREEN, [self._x, self._y], self._radius))
 
 class Enemy:
   def __init__(self, y):
@@ -69,6 +78,8 @@ class Enemy:
     self._y=y
     self._canMove=False
     self._moveCD=10
+    self._hitbox=pygame.Rect(self._x, self._y, enemySize, enemySize)
+
   
   def setX(self, x):
     self._x=x
@@ -88,6 +99,14 @@ class Enemy:
     self._moveCD=data
   def getMoveCD(self):
     return(self._moveCD)
+  
+  def setHitbox(self, hitbox):
+    self._hitbox=hitbox
+  def getHitbox(self):
+    return(self._hitbox)
+  #
+  def updateHitbox(self):
+    self._hitbox=pygame.Rect(self._x, self._y, enemySize, enemySize)
 
   def countdown(self):
     if self._moveCD > 0:
@@ -96,7 +115,7 @@ class Enemy:
       self._canMove=True
 
   def drawEnemy(self):
-    pygame.draw.rect(screen, RED, [self._x, self._y, enemySize, enemySize])
+    return(pygame.draw.rect(screen, RED, [self._x, self._y, enemySize, enemySize]))
       
 
 #other variable initializers (fonts, text, images, etc)
@@ -108,6 +127,7 @@ reloadTime=20
 bulletRadius=10
 bulletSpeed=10
 enemySize=40
+randomSpawnTime=True
 enemySpawnCooldown=300
 enemyMoveCooldown=15
 speed=5
@@ -138,19 +158,28 @@ def movePlayer(direction, currentX):
       currentX-=speed 
   return(currentX)
 
+def checkCollision():
+  for bullet in bullets:
+    for enemy in enemies:
+      if(pygame.Rect.colliderect(enemy.drawEnemy(), bullet.drawBullet())):
+         print('hit!')
+         bullets.remove(bullet)
+         enemies.remove(enemy)
+
 def createBullets(currentX):
-  print('circle')
   newBullet=Bullet(bulletRadius, currentX, screen_height-plrSpaceShip.getHeight()-bulletRadius)
   bullets.append(newBullet)
-  print('circle2')
 
 def updateBullets():
   for bullet in bullets:
     if bullet.getY() > 0-bulletRadius:
       bullet.setY(bullet.getY()-bulletSpeed)
     else:
-      print('bullet dead')
+      #print('bullet dead')
       bullets.remove(bullet)
+    bullet.updateHitbox()
+
+    checkCollision()
     bullet.drawBullet()
 
 def spawnEnemy():
@@ -162,8 +191,7 @@ def updateEnemies():
     enemy.countdown()
     if enemy.getY() > screen_height+enemySize:
       enemies.remove(enemy)
-    else:
-      if enemy.getCanMove():
+    elif enemy.getCanMove():
         enemy.setCanMove(False)
         enemy.setMoveCD(enemyMoveCooldown)
         
@@ -173,7 +201,7 @@ def updateEnemies():
         enemy.setY(enemy.getY()+enemySpeed)
 
     enemy.drawEnemy()
-    print(enemy.getY())
+    #print(enemy.getY())
 
 #create a screen with dimensions 
 screen = pygame.display.set_mode((screen_width, screen_height)) 
@@ -243,7 +271,11 @@ while keep_playing==True:
     #print(enemyFlag)
   else: 
     spawnEnemy()
-    enemyFlag=enemySpawnCooldown
+    if randomSpawnTime:
+      enemyFlag=random.randint(0,enemySpawnCooldown)
+      print(enemyFlag)
+    else:
+      enemyFlag=enemySpawnCooldown
   
   #all items drawn to the screen go here
   screen.fill((0, 0, 0))
