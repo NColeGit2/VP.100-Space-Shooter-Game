@@ -24,6 +24,7 @@ class SpaceShip:
     """init vars"""
     self._height=height
     self._width=width
+    self._alive=True
 
   #getters & setters
   def setHeight(self, height):
@@ -35,6 +36,11 @@ class SpaceShip:
     self._width=width
   def getWidth(self):
     return(self._width)
+  
+  def setAlive(self, alive):
+    self._alive=alive
+  def getAlive(self):
+    return(self._alive)
   
 class Bullet:
   def __init__(self, radius, x, y):
@@ -123,12 +129,12 @@ class Enemy:
 
 
 #alterable variables
-reloadTime=20
+reloadTime=15
 bulletRadius=10
 bulletSpeed=10
 enemySize=40
 randomSpawnTime=True
-enemySpawnCooldown=300
+enemySpawnCooldown=150
 enemyMoveCooldown=15
 speed=5
 enemySpeed=5
@@ -143,6 +149,7 @@ enemies=[]
 canShoot=True
 flag=0
 enemyFlag=enemySpawnCooldown
+deathFlag=0
 
 #functions for game
 def drawPlayer(x):
@@ -193,6 +200,7 @@ def updateEnemies():
     enemy.countdown()
     if enemy.getY() > screen_height+enemySize:
       enemies.remove(enemy)
+      plrSpaceShip.setAlive(False)
     elif enemy.getCanMove():
         enemy.setCanMove(False)
         enemy.setMoveCD(enemyMoveCooldown)
@@ -290,6 +298,14 @@ while keep_playing==True:
 
   updateBullets()
   updateEnemies()
+
+  if not plrSpaceShip.getAlive():
+    screen.fill(RED)
+    print(deathFlag)
+    if deathFlag==60:
+      keep_playing=False
+    else:
+      deathFlag+=1
   #This function call updates the screen
   pygame.display.update()
 
