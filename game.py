@@ -132,7 +132,7 @@ enemySpawnCooldown=300
 enemyMoveCooldown=15
 speed=5
 enemySpeed=5
-enemyXRange=5
+enemyXRange=15
 
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
@@ -162,9 +162,12 @@ def checkCollision():
   for bullet in bullets:
     for enemy in enemies:
       if(pygame.Rect.colliderect(enemy.drawEnemy(), bullet.drawBullet())):
-         print('hit!')
-         bullets.remove(bullet)
-         enemies.remove(enemy)
+        print('hit!')
+        try:
+          bullets.remove(bullet)
+          enemies.remove(enemy)
+        except ValueError:
+          print('error, one bullet hit two targets')
 
 def createBullets(currentX):
   newBullet=Bullet(bulletRadius, currentX, screen_height-plrSpaceShip.getHeight()-bulletRadius)
@@ -177,7 +180,6 @@ def updateBullets():
     else:
       #print('bullet dead')
       bullets.remove(bullet)
-    bullet.updateHitbox()
 
     checkCollision()
     bullet.drawBullet()
@@ -253,7 +255,7 @@ while keep_playing==True:
   else:
     #waits countdown, 60 frames is a second
     if flag < reloadTime:
-      print(flag)
+      #print(flag)
       flag+=1
     else:
       print("Can shoot")
@@ -273,7 +275,7 @@ while keep_playing==True:
     spawnEnemy()
     if randomSpawnTime:
       enemyFlag=random.randint(0,enemySpawnCooldown)
-      print(enemyFlag)
+      #print(enemyFlag)
     else:
       enemyFlag=enemySpawnCooldown
   
