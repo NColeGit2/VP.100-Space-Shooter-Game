@@ -109,10 +109,10 @@ bulletRadius=10
 bulletSpeed=10
 enemySize=40
 enemySpawnCooldown=300
-enemyMoveCooldown=0
+enemyMoveCooldown=15
 speed=5
 enemySpeed=5
-enemyXRange=10
+enemyXRange=5
 
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
@@ -168,7 +168,7 @@ def updateEnemies():
         enemy.setMoveCD(enemyMoveCooldown)
         
         xMovement=random.randint(-enemyXRange, enemyXRange)
-        if enemy.getX()+xMovement > 0 or enemy.getX()+xMovement < screen_width-enemySize:
+        if enemy.getX()+xMovement > 0 and enemy.getX()+xMovement < screen_width-enemySize:
           enemy.setX(enemy.getX()+xMovement)
         enemy.setY(enemy.getY()+enemySpeed)
 
