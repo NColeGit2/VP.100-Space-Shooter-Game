@@ -134,11 +134,18 @@ class Enemy:
 
 #other variable initializers (fonts, text, images, etc)
 font = pygame.font.SysFont("comicsansms", 72)
-gameOverText = font.render(str("Game Over!"), True, WHITE)
-title=font.render("GAME", True, WHITE)
-startText=font.render("Start Game", True, WHITE)
-exitText=font.render("Exit Game", True, WHITE)
 
+gameOverText = font.render(str("Game Over!"), True, WHITE)
+gameOverRect=gameOverText.get_rect()
+
+title=font.render("GAME", True, WHITE)
+titleRect=title.get_rect()
+
+startText=font.render("Start Game", True, WHITE)
+startRect=startText.get_rect()
+
+exitText=font.render("Exit Game", True, WHITE)
+exitRect=exitText.get_rect()
 
 #alterable variables
 reloadTime=25
@@ -163,7 +170,7 @@ flag=0
 enemyFlag=enemySpawnCooldown
 deathFlag=0
 
-gamePlaying=True
+gamePlaying=False
 plrPts=0
 
 
@@ -260,6 +267,9 @@ while keep_playing==True:
     #will stop the game loop if escape is pressed (doesn't work in Codio)
     if event.type == pygame.QUIT: 
       keep_playing = False
+
+
+  #if not on menu
   if gamePlaying:
     #add your key press code here
     pressed = pygame.key.get_pressed()
@@ -326,11 +336,18 @@ while keep_playing==True:
         keep_playing=False
       else:
         deathFlag+=1
+
+  #on menu
   else:
+    mouse=pygame.mouse.get_pressed()
+    if mouse[0]:
+      mousePos=pygame.mouse.get_pos()
+      print(mousePos)
+
     screen.fill(BLUE)
-    screen.blit(title,(screen_width/2, 0))
-    screen.blit(startText,(screen_width/2, screen_height/2))
-    screen.blit(exitText,(screen_width/2, screen_height))
+    screen.blit(title,(screen_width/2-(titleRect.w/2), 0))
+    screen.blit(startText,(screen_width/2-(startRect.w/2), screen_height/2-(startRect.w/2)))
+    screen.blit(exitText,(screen_width/2-(exitRect.w/2), screen_height-exitRect.h))
   #This function call updates the screen
   pygame.display.update()
 
