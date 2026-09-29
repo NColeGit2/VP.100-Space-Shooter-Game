@@ -342,7 +342,9 @@ while keep_playing==True:
     mouse=pygame.mouse.get_pressed()
     if mouse[0]:
       mousePos=pygame.mouse.get_pos()
-      print(mousePos)
+      #print(mousePos)
+      if mousePos[0] > (screen_width/2-(startRect.w/2)) and mousePos[0] < (screen_width/2+(startRect.w/2)):
+        print("you did it!")
 
     screen.fill(BLUE)
     screen.blit(title,(screen_width/2-(titleRect.w/2), 0))
