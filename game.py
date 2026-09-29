@@ -17,6 +17,8 @@ screen_height=750
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 GREY = (211, 211, 211)
+BLUE= (0, 0, 255)
+WHITE=(255,255,255)
 
 #classes
 class SpaceShip:
@@ -25,6 +27,7 @@ class SpaceShip:
     self._height=height
     self._width=width
     self._alive=True
+    self._pts=0
 
   #getters & setters
   def setHeight(self, height):
@@ -41,6 +44,11 @@ class SpaceShip:
     self._alive=alive
   def getAlive(self):
     return(self._alive)
+  
+  def setPts(self, pts):
+    self._pts=pts
+  def getPts(self):
+    return(self._pts)
   
 class Bullet:
   def __init__(self, radius, x, y):
@@ -125,11 +133,15 @@ class Enemy:
       
 
 #other variable initializers (fonts, text, images, etc)
-
+font = pygame.font.SysFont("comicsansms", 72)
+gameOverText = font.render(str("Game Over!"), True, WHITE)
+title=font.render("GAME", True, WHITE)
+startText=font.render("Start Game", True, WHITE)
+exitText=font.render("Exit Game", True, WHITE)
 
 
 #alterable variables
-reloadTime=15
+reloadTime=25
 bulletRadius=10
 bulletSpeed=10
 enemySize=40
@@ -137,7 +149,7 @@ randomSpawnTime=True
 enemySpawnCooldown=150
 enemyMoveCooldown=15
 speed=5
-enemySpeed=5
+enemySpeed=10
 enemyXRange=15
 
 plrSpaceShip=SpaceShip(20, 50)
@@ -150,6 +162,10 @@ canShoot=True
 flag=0
 enemyFlag=enemySpawnCooldown
 deathFlag=0
+
+gamePlaying=True
+plrPts=0
+
 
 #functions for game
 def drawPlayer(x):
@@ -173,6 +189,8 @@ def checkCollision():
         try:
           bullets.remove(bullet)
           enemies.remove(enemy)
+          plrSpaceShip.setPts(plrSpaceShip.getPts()+1)
+          print(f"Points:{plrSpaceShip.getPts()}")
         except ValueError:
           print('error, one bullet hit two targets')
 
@@ -242,70 +260,77 @@ while keep_playing==True:
     #will stop the game loop if escape is pressed (doesn't work in Codio)
     if event.type == pygame.QUIT: 
       keep_playing = False
-
-  #add your key press code here
-  pressed = pygame.key.get_pressed()
-  if pressed[pygame.K_x]:
-    print("close")
-    keep_playing=False
-  ##movement
-  if pressed[pygame.K_LEFT]:
-    #print('Going left')
-    shipX=movePlayer('l', shipX)
-  if pressed[pygame.K_RIGHT]:
-    #print('Going right')
-    shipX=movePlayer('r', shipX)
-  ##shoot
-  if canShoot:
-    if pressed[pygame.K_SPACE]:
-      canShoot=False
-      createBullets(shipX+(plrSpaceShip.getWidth()/2))  #gets the bullet centered on the ship
-  else:
-    #waits countdown, 60 frames is a second
-    if flag < reloadTime:
-      #print(flag)
-      flag+=1
-    else:
-      print("Can shoot")
-      flag=0
-      canShoot=True
-
-    
-  #add your mouse controls here
-
-
-  #spawn enemy loop
-  if enemyFlag > 0:
-    enemyFlag-=1
-    #print(enemySpawnCooldown)
-    #print(enemyFlag)
-  else: 
-    spawnEnemy()
-    if randomSpawnTime:
-      enemyFlag=random.randint(0,enemySpawnCooldown)
-      #print(enemyFlag)
-    else:
-      enemyFlag=enemySpawnCooldown
-  
-  #all items drawn to the screen go here
-  screen.fill((0, 0, 0))
-  pygame.draw.line(screen, GREEN, [0, 0], [100,100], 5)
-  drawPlayer(shipX)
-
-
-  #enemy stuff
-
-
-  updateBullets()
-  updateEnemies()
-
-  if not plrSpaceShip.getAlive():
-    screen.fill(RED)
-    print(deathFlag)
-    if deathFlag==60:
+  if gamePlaying:
+    #add your key press code here
+    pressed = pygame.key.get_pressed()
+    if pressed[pygame.K_x]:
+      print("close")
       keep_playing=False
+    ##movement
+    if pressed[pygame.K_LEFT]:
+      #print('Going left')
+      shipX=movePlayer('l', shipX)
+    if pressed[pygame.K_RIGHT]:
+      #print('Going right')
+      shipX=movePlayer('r', shipX)
+    ##shoot
+    if canShoot:
+      if pressed[pygame.K_SPACE]:
+        canShoot=False
+        createBullets(shipX+(plrSpaceShip.getWidth()/2))  #gets the bullet centered on the ship
     else:
-      deathFlag+=1
+      #waits countdown, 60 frames is a second
+      if flag < reloadTime:
+        #print(flag)
+        flag+=1
+      else:
+        #print("Can shoot")
+        flag=0
+        canShoot=True
+
+      
+    #add your mouse controls here
+
+
+    #spawn enemy loop
+    if enemyFlag > 0:
+      enemyFlag-=1
+      #print(enemySpawnCooldown)
+      #print(enemyFlag)
+    else: 
+      spawnEnemy()
+      if randomSpawnTime:
+        enemyFlag=random.randint(0,enemySpawnCooldown)
+        #print(enemyFlag)
+      else:
+        enemyFlag=enemySpawnCooldown
+    
+    #all items drawn to the screen go here
+    screen.fill((0, 0, 0))
+    pygame.draw.line(screen, GREEN, [0, 0], [100,100], 5)
+    text = font.render(str(plrSpaceShip.getPts()), True, WHITE)
+    screen.blit(text,(screen_width/2, 0))
+    drawPlayer(shipX)
+
+
+    #enemy stuff
+
+
+    updateBullets()
+    updateEnemies()
+
+    if not plrSpaceShip.getAlive():
+      screen.fill(RED)
+      print(deathFlag)
+      if deathFlag==60:
+        keep_playing=False
+      else:
+        deathFlag+=1
+  else:
+    screen.fill(BLUE)
+    screen.blit(title,(screen_width/2, 0))
+    screen.blit(startText,(screen_width/2, screen_height/2))
+    screen.blit(exitText,(screen_width/2, screen_height))
   #This function call updates the screen
   pygame.display.update()
 
