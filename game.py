@@ -16,6 +16,8 @@ screen_height=750
 #color code constants 
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
+ORANGE=(250, 165, 0)
+YELLOW=(165, 165, 0)
 GREY = (211, 211, 211)
 BLUE= (0, 0, 255)
 WHITE=(255,255,255)
@@ -56,7 +58,6 @@ class Bullet:
     self._radius=radius
     self._x=x
     self._y=y
-    self._hitbox=pygame.Rect(self._x, self._y, self._radius*2, self._radius*2)
 
   #getters & setters
   def setRadius(self, radius):
@@ -161,6 +162,7 @@ enemyMoveCooldown=15
 speed=5
 enemySpeed=10
 enemyXRange=15
+pierce=False
 
 plrSpaceShip=SpaceShip(20, 50)
 shipX=screen_width/2
@@ -196,7 +198,8 @@ def checkCollision():
       if(pygame.Rect.colliderect(enemy.drawEnemy(), bullet.drawBullet())):
         print('hit!')
         try:
-          bullets.remove(bullet)
+          if not pierce:
+            bullets.remove(bullet)
           enemies.remove(enemy)
           plrSpaceShip.setPts(plrSpaceShip.getPts()+1)
           print(f"Points:{plrSpaceShip.getPts()}")
@@ -360,6 +363,7 @@ while keep_playing==True:
       plrSpaceShip.setPts(0)
       enemies=[]
       bullets=[]
+      shipX=screen_width/2
 
 
   #on menu
