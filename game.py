@@ -118,7 +118,7 @@ class Enemy:
     self._hitbox=hitbox
   def getHitbox(self):
     return(self._hitbox)
-  #
+  
   def updateHitbox(self):
     self._hitbox=pygame.Rect(self._x, self._y, enemySize, enemySize)
 
@@ -137,6 +137,9 @@ font = pygame.font.SysFont("comicsansms", 72)
 
 gameOverText = font.render(str("Game Over!"), True, WHITE)
 gameOverRect=gameOverText.get_rect()
+
+backText=font.render("Back to menu", True, WHITE)
+backRect=backText.get_rect()
 
 title=font.render("GAME", True, WHITE)
 titleRect=title.get_rect()
@@ -171,7 +174,6 @@ enemyFlag=enemySpawnCooldown
 deathFlag=0
 
 gamePlaying=False
-plrPts=0
 
 
 #functions for game
@@ -267,9 +269,33 @@ while keep_playing==True:
     #will stop the game loop if escape is pressed (doesn't work in Codio)
     if event.type == pygame.QUIT: 
       keep_playing = False
+    #if clicking and on main menu screen
+    if not (gamePlaying) and plrSpaceShip.getAlive():
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button==1:
+          mousePos=pygame.mouse.get_pos()
+          #print(mousePos)
+          if mousePos[0] > (screen_width/2-(startRect.w/2)) and mousePos[0] < (screen_width/2+(startRect.w/2)) and mousePos[1] > (screen_height/2-(startRect.h/2)) and mousePos[1] < (screen_height/2+(startRect.h/2)):
+            print("play time!")
+            gamePlaying=True
+          if mousePos[0] > (screen_width/2-(exitRect.w/2)) and mousePos[0] < (screen_width/2+(exitRect.w/2)) and mousePos[1] > (screen_height-(exitRect.h)) and mousePos[1] < (screen_height):            
+            print("Exit")
+            keep_playing=False
+    #if clicking and on game over screen
+    elif not(gamePlaying) and not(plrSpaceShip.getAlive()):
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button==1:
+          mousePos=pygame.mouse.get_pos()
+          #print(mousePos)
+          if mousePos[0] > (screen_width/2-(backRect.w/2)) and mousePos[0] < (screen_width/2+(backRect.w/2)) and mousePos[1] > (screen_height/2-(backRect.h/2)) and mousePos[1] < (screen_height/2+(backRect.h/2)):
+            print("back to menu")
+            plrSpaceShip.setAlive(True)
+          if mousePos[0] > (screen_width/2-(exitRect.w/2)) and mousePos[0] < (screen_width/2+(exitRect.w/2)) and mousePos[1] > (screen_height-(exitRect.h)) and mousePos[1] < (screen_height):
+            print("Exit")
+            keep_playing=False
 
 
-  #if not on menu
+  #if not on menu/if playing game game game game
   if gamePlaying:
     #add your key press code here
     pressed = pygame.key.get_pressed()
@@ -330,25 +356,22 @@ while keep_playing==True:
     updateEnemies()
 
     if not plrSpaceShip.getAlive():
-      screen.fill(RED)
-      print(deathFlag)
-      if deathFlag==60:
-        keep_playing=False
-      else:
-        deathFlag+=1
+      gamePlaying=False
+      plrSpaceShip.setPts(0)
+      enemies=[]
+      bullets=[]
+
 
   #on menu
-  else:
-    mouse=pygame.mouse.get_pressed()
-    if mouse[0]:
-      mousePos=pygame.mouse.get_pos()
-      #print(mousePos)
-      if mousePos[0] > (screen_width/2-(startRect.w/2)) and mousePos[0] < (screen_width/2+(startRect.w/2)):
-        print("you did it!")
-
+  elif not(gamePlaying) and (plrSpaceShip.getAlive()):
     screen.fill(BLUE)
     screen.blit(title,(screen_width/2-(titleRect.w/2), 0))
-    screen.blit(startText,(screen_width/2-(startRect.w/2), screen_height/2-(startRect.w/2)))
+    screen.blit(startText,(screen_width/2-(startRect.w/2), screen_height/2-(startRect.h/2)))
+    screen.blit(exitText,(screen_width/2-(exitRect.w/2), screen_height-exitRect.h))
+  elif not(gamePlaying) and not(plrSpaceShip.getAlive()):
+    screen.fill(RED)
+    screen.blit(gameOverText,(screen_width/2-(gameOverRect.w/2), 0))
+    screen.blit(backText,(screen_width/2-(backRect.w/2), screen_height/2-(backRect.h/2)))
     screen.blit(exitText,(screen_width/2-(exitRect.w/2), screen_height-exitRect.h))
   #This function call updates the screen
   pygame.display.update()
