@@ -17,8 +17,8 @@ connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score IN
 cursor = connect.cursor()
 leaderboard=cursor.execute('SELECT * FROM leaderboard')
 
-for profile in leaderboard:
-  print(profile)
+insertSQL='''INSERT INTO leaderboard(username,score) VALUES(?,?)'''
+
 
 username='DefaultName'
 
@@ -192,6 +192,12 @@ gamePlaying=False
 
 
 #functions for game
+def updateLeaderboard(username, score, insertSQL):
+  vals=(f'{username}',f'{score}')
+  cursor.execute(insertSQL, vals)
+  
+  connect.commit()
+
 def drawPlayer(x):
   pygame.draw.rect(screen, GREY, [x, screen_height-plrSpaceShip.getHeight(), plrSpaceShip.getWidth(), plrSpaceShip.getHeight()])
 
@@ -372,7 +378,7 @@ while keep_playing==True:
     updateEnemies()
 
     if not plrSpaceShip.getAlive():
-      cursor.execute(f"INSERT INTO leaderboard(username, score) VALUES('{username}', {plrSpaceShip.getPts()})")
+      updateLeaderboard(username, plrSpaceShip.getPts(), insertSQL)
       gamePlaying=False
       plrSpaceShip.setPts(0)
       username="DefaultName"
