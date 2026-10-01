@@ -1,5 +1,6 @@
 import pygame 
 import random
+import sqlite3
 
 #anchor the pygame screen so you see it in codio.
 #Click on the arrow in the upper left corner to display in a new browser tab.
@@ -8,6 +9,18 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0,0)
 
 #start the pygame module 
 pygame.init() 
+
+#database
+connect = sqlite3.connect('database.db')
+connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
+
+cursor = connect.cursor()
+leaderboard=cursor.execute('SELECT * FROM leaderboard')
+
+for profile in leaderboard:
+  print(profile)
+
+username='DefaultName'
 
 #variables for screen size: 
 screen_width=1000
@@ -359,11 +372,14 @@ while keep_playing==True:
     updateEnemies()
 
     if not plrSpaceShip.getAlive():
+      cursor.execute(f"INSERT INTO leaderboard(username, score) VALUES('{username}', {plrSpaceShip.getPts()})")
       gamePlaying=False
       plrSpaceShip.setPts(0)
+      username="DefaultName"
       enemies=[]
       bullets=[]
       shipX=screen_width/2
+
 
 
   #on menu
