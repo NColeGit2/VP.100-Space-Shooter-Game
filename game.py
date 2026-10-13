@@ -1,6 +1,7 @@
 import pygame 
 import random
 import sqlite3
+import requests
 
 #anchor the pygame screen so you see it in codio.
 #Click on the arrow in the upper left corner to display in a new browser tab.
@@ -11,6 +12,11 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0,0)
 pygame.init() 
 
 #database
+
+url='http://127.0.0.1:5000' or 'http://10.30.1.8.5000'
+
+"""
+
 connect = sqlite3.connect('database.db')
 connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
 
@@ -19,7 +25,7 @@ leaderboard=cursor.execute('SELECT * FROM leaderboard')
 
 insertSQL='''INSERT INTO leaderboard(username,score) VALUES(?,?)'''
 
-
+"""
 username='DefaultName'
 
 #variables for screen size: 
@@ -192,12 +198,13 @@ gamePlaying=False
 
 
 #functions for game
+"""
 def updateLeaderboard(username, score, insertSQL):
   vals=(f'{username}',f'{score}')
   cursor.execute(insertSQL, vals)
   
   connect.commit()
-
+"""
 def drawPlayer(x):
   pygame.draw.rect(screen, GREY, [x, screen_height-plrSpaceShip.getHeight(), plrSpaceShip.getWidth(), plrSpaceShip.getHeight()])
 
@@ -378,7 +385,9 @@ while keep_playing==True:
     updateEnemies()
 
     if not plrSpaceShip.getAlive():
-      updateLeaderboard(username, plrSpaceShip.getPts(), insertSQL)
+      plrData={"username": username, "points": plrSpaceShip.getPts()}
+      requests.post(url, json=plrData)
+      #updateLeaderboard(username, plrSpaceShip.getPts(), insertSQL)
       gamePlaying=False
       plrSpaceShip.setPts(0)
       username="DefaultName"
@@ -388,12 +397,13 @@ while keep_playing==True:
 
 
 
-  #on menu
+  #on main menu
   elif not(gamePlaying) and (plrSpaceShip.getAlive()):
     screen.fill(BLUE)
     screen.blit(title,(screen_width/2-(titleRect.w/2), 0))
     screen.blit(startText,(screen_width/2-(startRect.w/2), screen_height/2-(startRect.h/2)))
     screen.blit(exitText,(screen_width/2-(exitRect.w/2), screen_height-exitRect.h))
+  #gameover menu
   elif not(gamePlaying) and not(plrSpaceShip.getAlive()):
     screen.fill(RED)
     screen.blit(gameOverText,(screen_width/2-(gameOverRect.w/2), 0))
