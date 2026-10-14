@@ -13,6 +13,7 @@ pygame.init()
 
 #database
 
+
 url='http://127.0.0.1:5000' or 'http://10.30.1.8.5000'
 
 """
