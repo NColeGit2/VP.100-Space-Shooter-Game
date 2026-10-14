@@ -11,11 +11,10 @@ connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score IN
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    data=request.get_data()
+    data=request.get_json()
     try:
-        for i in data:
-            print('gurp')
-            print(i)
+        for (key, value) in data.items():
+            print(f'key: {key} value: {value}')
         
         print("apple")
         print(data)
