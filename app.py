@@ -9,10 +9,18 @@ app=Flask(__name__)
 connect = sqlite3.connect('database.db')
 connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
 
-@app.route('/', methods=["POST"])
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    data=request.get_json()
-    print({data})
+    data=request.get_data()
+    try:
+        for i in data:
+            print('gurp')
+            print(i)
+        
+        print("apple")
+        print(data)
+    except:
+        print(data)
     """
     connect = sqlite3.connect('database.db')
     cursor = connect.cursor()
@@ -21,6 +29,8 @@ def home():
     data = cursor.fetchall()
     return render_template('index.html', data=data)
     """
+    return f"<h1>aaa {data} aaa</h1>"
+
 @app.route('/page2')
 def page2():
     return '<h1>2</h1>'
