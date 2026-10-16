@@ -171,6 +171,9 @@ startRect=startText.get_rect()
 exitText=font.render("Exit Game", True, WHITE)
 exitRect=exitText.get_rect()
 
+nameBox=font.render("Name: ", True, WHITE)
+nameBoxRect=nameBox.get_rect()
+
 #alterable variables
 reloadTime=25
 bulletRadius=10
@@ -308,6 +311,8 @@ while keep_playing==True:
           if mousePos[0] > (screen_width/2-(startRect.w/2)) and mousePos[0] < (screen_width/2+(startRect.w/2)) and mousePos[1] > (screen_height/2-(startRect.h/2)) and mousePos[1] < (screen_height/2+(startRect.h/2)):
             print("play time!")
             gamePlaying=True
+          if mousePos[0] > (screen_width/2-(nameBoxRect.w/2)) and mousePos[0] < (screen_width/2+(nameBoxRect.w/2)) and mousePos[1] > (screen_height/2-(nameBoxRect.h/2)) and mousePos[1] < (screen_height/2+(titleRect.h*1.5)):
+            print("changing name!") 
           if mousePos[0] > (screen_width/2-(exitRect.w/2)) and mousePos[0] < (screen_width/2+(exitRect.w/2)) and mousePos[1] > (screen_height-(exitRect.h)) and mousePos[1] < (screen_height):            
             print("Exit")
             keep_playing=False
@@ -402,6 +407,7 @@ while keep_playing==True:
   elif not(gamePlaying) and (plrSpaceShip.getAlive()):
     screen.fill(BLUE)
     screen.blit(title,(screen_width/2-(titleRect.w/2), 0))
+    screen.blit(nameBox,(screen_width/2-(nameBoxRect.w/2), titleRect.h*1.5))
     screen.blit(startText,(screen_width/2-(startRect.w/2), screen_height/2-(startRect.h/2)))
     screen.blit(exitText,(screen_width/2-(exitRect.w/2), screen_height-exitRect.h))
   #gameover menu
