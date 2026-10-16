@@ -387,7 +387,7 @@ while keep_playing==True:
 
     if not plrSpaceShip.getAlive():
       plrData={"username": username, "points": plrSpaceShip.getPts()}
-      requests.post(url, json=plrData)
+      requests.post(url, data={"username": username, "points": plrSpaceShip.getPts()})
       #updateLeaderboard(username, plrSpaceShip.getPts(), insertSQL)
       gamePlaying=False
       plrSpaceShip.setPts(0)

@@ -6,33 +6,48 @@ import requests
 
 app=Flask(__name__)
 
-connect = sqlite3.connect('database.db')
-connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
 
-dataTable=[]
+insertSQL='''INSERT INTO leaderboard(username,score) VALUES(?,?)'''
+
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    data=request.get_json()
+
+    data=request.get_data()
+    #fix data to values from query string thing
     try:
-        for (key, value) in data.items():
-            print(f'key: {key} value: {value}')
-            dataTable.append({key, value})
-        print("apple")
-        print(data)
+        data=data.decode()
+        data=data.split('&')
+        tempname=data[0].split('=')
+        temppts=data[1].split('=')
+
+        username=tempname[1]
+        points=temppts[1]
     except:
-        print(data)
-    
-    """
+        print("No data to add or error i dunno")
+
+
     connect = sqlite3.connect('database.db')
+    connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
     cursor = connect.cursor()
     cursor.execute('SELECT * FROM leaderboard')
 
-    data = cursor.fetchall()
-    return render_template('index.html', data=data)
-    """
-    print(dataTable)
-    return render_template('index.html', data=data)
+    def updateLeaderboard(username, score, insertSQL):
+        vals=(f'{username}',f'{score}')
+        cursor.execute(insertSQL, vals)
+        connect.commit()
+
+    #
+    try:
+        updateLeaderboard(username, points, insertSQL)
+    except:
+        print("failure")
+    
+    dbData = cursor.fetchall()
+    cursor.execute('SELECT * FROM leaderboard')
+    return render_template('index.html', dbData=dbData)
 
 @app.route('/page2')
 def page2():
