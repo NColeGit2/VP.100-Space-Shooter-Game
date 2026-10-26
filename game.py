@@ -28,6 +28,7 @@ insertSQL='''INSERT INTO leaderboard(username,score) VALUES(?,?)'''
 
 """
 username='DefaultName'
+newUsername=''
 
 #variables for screen size: 
 screen_width=1000
@@ -171,7 +172,9 @@ startRect=startText.get_rect()
 exitText=font.render("Exit Game", True, WHITE)
 exitRect=exitText.get_rect()
 
-nameBox=font.render("Name: ", True, WHITE)
+
+nameText="Name:  "
+nameBox=font.render(nameText, True, WHITE)
 nameBoxRect=nameBox.get_rect()
 
 #alterable variables
@@ -198,6 +201,8 @@ flag=0
 enemyFlag=enemySpawnCooldown
 deathFlag=0
 
+
+changingName=False
 gamePlaying=False
 
 
@@ -308,14 +313,19 @@ while keep_playing==True:
         if event.button==1:
           mousePos=pygame.mouse.get_pos()
           #print(mousePos)
+          #play game
           if mousePos[0] > (screen_width/2-(startRect.w/2)) and mousePos[0] < (screen_width/2+(startRect.w/2)) and mousePos[1] > (screen_height/2-(startRect.h/2)) and mousePos[1] < (screen_height/2+(startRect.h/2)):
             print("play time!")
             gamePlaying=True
-          if mousePos[0] > (screen_width/2-(nameBoxRect.w/2)) and mousePos[0] < (screen_width/2+(nameBoxRect.w/2)) and mousePos[1] > (screen_height/2-(nameBoxRect.h/2)) and mousePos[1] < (screen_height/2+(titleRect.h*1.5)):
+          #name
+          if mousePos[0] > (screen_width/2-(nameBoxRect.w/2)) and mousePos[0] < (screen_width/2+(nameBoxRect.w/2)) and mousePos[1] > (0+titleRect.h) and mousePos[1] < (0+(1.5*titleRect.h)+nameBoxRect.h):
             print("changing name!") 
+            changingName=True
+          #exit
           if mousePos[0] > (screen_width/2-(exitRect.w/2)) and mousePos[0] < (screen_width/2+(exitRect.w/2)) and mousePos[1] > (screen_height-(exitRect.h)) and mousePos[1] < (screen_height):            
             print("Exit")
             keep_playing=False
+    
     #if clicking and on game over screen
     elif not(gamePlaying) and not(plrSpaceShip.getAlive()):
       if event.type == pygame.MOUSEBUTTONDOWN:
@@ -329,7 +339,12 @@ while keep_playing==True:
             print("Exit")
             keep_playing=False
 
-
+  pressed=pygame.key.get_pressed()
+  if pressed[pygame.K_a]:
+    newUsername=newUsername+"a"
+    nameText=nameText+"a"
+    print("Adding a")
+    print(username)
   #if not on menu/if playing game game game game
   if gamePlaying:
     #add your key press code here
@@ -407,6 +422,7 @@ while keep_playing==True:
   elif not(gamePlaying) and (plrSpaceShip.getAlive()):
     screen.fill(BLUE)
     screen.blit(title,(screen_width/2-(titleRect.w/2), 0))
+    nameBox=font.render(nameText, True, WHITE)
     screen.blit(nameBox,(screen_width/2-(nameBoxRect.w/2), titleRect.h*1.5))
     screen.blit(startText,(screen_width/2-(startRect.w/2), screen_height/2-(startRect.h/2)))
     screen.blit(exitText,(screen_width/2-(exitRect.w/2), screen_height-exitRect.h))
