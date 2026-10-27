@@ -325,6 +325,19 @@ while keep_playing==True:
           if mousePos[0] > (screen_width/2-(exitRect.w/2)) and mousePos[0] < (screen_width/2+(exitRect.w/2)) and mousePos[1] > (screen_height-(exitRect.h)) and mousePos[1] < (screen_height):            
             print("Exit")
             keep_playing=False
+          
+      #name typing
+      if event.type==pygame.KEYDOWN:
+        if changingName:
+          print(event)
+          if event.unicode=="\r":
+            print("Stop name edit")
+            changingName=False
+
+        #use keydown
+        #use unicode thing to get letter
+        #if enter, changing name is DONE
+        #enter has unicode of \r and scancode of 40, event.unicode=="\r" or event.scancode==40
     
     #if clicking and on game over screen
     elif not(gamePlaying) and not(plrSpaceShip.getAlive()):
@@ -339,12 +352,20 @@ while keep_playing==True:
             print("Exit")
             keep_playing=False
 
-  pressed=pygame.key.get_pressed()
-  if pressed[pygame.K_a]:
-    newUsername=newUsername+"a"
-    nameText=nameText+"a"
-    print("Adding a")
-    print(username)
+  """
+  #name thing
+  if changingName:
+    pressed=pygame.key.get_pressed()
+    if pressed[pygame.K_a]:
+      newUsername=newUsername+"a"
+      nameText=nameText+"a"
+      print("Adding a")
+      print(username)
+  """
+
+
+
+
   #if not on menu/if playing game game game game
   if gamePlaying:
     #add your key press code here
