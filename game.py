@@ -315,12 +315,16 @@ while keep_playing==True:
           #print(mousePos)
           #play game
           if mousePos[0] > (screen_width/2-(startRect.w/2)) and mousePos[0] < (screen_width/2+(startRect.w/2)) and mousePos[1] > (screen_height/2-(startRect.h/2)) and mousePos[1] < (screen_height/2+(startRect.h/2)):
-            print("play time!")
-            gamePlaying=True
+            if not changingName:
+              print("play time!")
+              gamePlaying=True
+            else:
+              print("Cant play while changing name.  ")
           #name
           if mousePos[0] > (screen_width/2-(nameBoxRect.w/2)) and mousePos[0] < (screen_width/2+(nameBoxRect.w/2)) and mousePos[1] > (0+titleRect.h) and mousePos[1] < (0+(1.5*titleRect.h)+nameBoxRect.h):
             print("changing name!") 
             changingName=True
+            username=""
           #exit
           if mousePos[0] > (screen_width/2-(exitRect.w/2)) and mousePos[0] < (screen_width/2+(exitRect.w/2)) and mousePos[1] > (screen_height-(exitRect.h)) and mousePos[1] < (screen_height):            
             print("Exit")
@@ -329,15 +333,27 @@ while keep_playing==True:
       #name typing
       if event.type==pygame.KEYDOWN:
         if changingName:
-          print(event)
+          #print(event)
+          #print(username)
           if event.unicode=="\r":
             print("Stop name edit")
             changingName=False
+          elif event.unicode=="\x08":
+            print("backspace")
+            if len(username)>0:
+              username=username.replace(username[-1], "", 1)
+              print(username)
+            else:
+              print("too short, cant backspace")
+          elif len(username)<20:
+            username+=event.unicode
+            print(username)
 
         #use keydown
         #use unicode thing to get letter
         #if enter, changing name is DONE
         #enter has unicode of \r and scancode of 40, event.unicode=="\r" or event.scancode==40
+        #backspacce has unicode of \x08 and scanode of 42
     
     #if clicking and on game over screen
     elif not(gamePlaying) and not(plrSpaceShip.getAlive()):
@@ -432,7 +448,7 @@ while keep_playing==True:
       #updateLeaderboard(username, plrSpaceShip.getPts(), insertSQL)
       gamePlaying=False
       plrSpaceShip.setPts(0)
-      username="DefaultName"
+      #username="DefaultName"
       enemies=[]
       bullets=[]
       shipX=screen_width/2
