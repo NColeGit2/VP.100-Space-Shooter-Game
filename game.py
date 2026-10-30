@@ -1,6 +1,5 @@
 import pygame 
 import random
-import sqlite3
 import requests
 
 #anchor the pygame screen so you see it in codio.

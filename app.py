@@ -33,7 +33,8 @@ def home():
     for data in dataTable:
         print(data[0])
         print(data[1])
-    """
+    #return render_template('index.html', dbData=dataTable)
+    
     connect = sqlite3.connect('database.db')
     connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
     cursor = connect.cursor()
@@ -53,8 +54,8 @@ def home():
     dbData = cursor.fetchall()
     cursor.execute('SELECT * FROM leaderboard')
     return render_template('index.html', dbData=dbData)
-    """
-    return render_template('index.html', dbData=dataTable)
+    
+
 @app.route('/page2')
 def page2():
     return '<h1>2</h1>'
