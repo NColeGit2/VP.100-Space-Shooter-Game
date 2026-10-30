@@ -8,6 +8,7 @@ app=Flask(__name__)
 
 insertSQL='''INSERT INTO leaderboard(username,score) VALUES(?,?)'''
 
+dataTable=[]
 
 
 
@@ -24,10 +25,15 @@ def home():
 
         username=tempname[1]
         points=temppts[1]
+
+        dataTable.append([username, points])
     except:
         print("No data to add or error i dunno")
-
-
+    print(dataTable)
+    for data in dataTable:
+        print(data[0])
+        print(data[1])
+    """
     connect = sqlite3.connect('database.db')
     connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
     cursor = connect.cursor()
@@ -47,7 +53,8 @@ def home():
     dbData = cursor.fetchall()
     cursor.execute('SELECT * FROM leaderboard')
     return render_template('index.html', dbData=dbData)
-
+    """
+    return render_template('index.html', dbData=dataTable)
 @app.route('/page2')
 def page2():
     return '<h1>2</h1>'

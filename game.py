@@ -173,7 +173,7 @@ exitText=font.render("Exit Game", True, WHITE)
 exitRect=exitText.get_rect()
 
 
-nameText="Name:  "
+nameText=f"Name: {username}"
 nameBox=font.render(nameText, True, WHITE)
 nameBoxRect=nameBox.get_rect()
 
@@ -339,16 +339,18 @@ while keep_playing==True:
             print("Stop name edit")
             changingName=False
           elif event.unicode=="\x08":
-            print("backspace")
+            #print("backspace")
             if len(username)>0:
               #slices last char off
               username=username[:-1]
-              print(username)
+              #print(username)
             else:
               print("too short, cant backspace")
-          elif len(username)<20:
+          elif event.unicode==" ":
+            print("Cannot add space to username")
+          elif len(username)<15:
             username+=event.unicode
-            print(username)
+            #print(username)
 
         #use keydown
         #use unicode thing to get letter
@@ -460,6 +462,7 @@ while keep_playing==True:
   elif not(gamePlaying) and (plrSpaceShip.getAlive()):
     screen.fill(BLUE)
     screen.blit(title,(screen_width/2-(titleRect.w/2), 0))
+    nameText=f"Name: {username}"
     nameBox=font.render(nameText, True, WHITE)
     screen.blit(nameBox,(screen_width/2-(nameBoxRect.w/2), titleRect.h*1.5))
     screen.blit(startText,(screen_width/2-(startRect.w/2), screen_height/2-(startRect.h/2)))
