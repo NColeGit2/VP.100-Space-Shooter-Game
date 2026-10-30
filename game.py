@@ -341,7 +341,8 @@ while keep_playing==True:
           elif event.unicode=="\x08":
             print("backspace")
             if len(username)>0:
-              username=username.replace(username[-1], "", 1)
+              #slices last char off
+              username=username[:-1]
               print(username)
             else:
               print("too short, cant backspace")
