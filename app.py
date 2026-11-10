@@ -50,9 +50,22 @@ def home():
         updateLeaderboard(username, points, insertSQL)
     except:
         print("failure")
-    
+
+    cursor.execute('SELECT * FROM leaderboard ORDER BY score DESC')
     dbData = cursor.fetchall()
-    cursor.execute('SELECT * FROM leaderboard')
+    print(len(dbData))
+    print(dbData)
+    """
+    lowest=0
+    for i in range(len(dbData)):
+        print(dbData[i][1])
+        if i==0:
+            lowest=dbData[i][1]
+        elif dbData[i][1]<lowest:
+    """
+        
+    #while len(dbData)>5:
+        
     return render_template('index.html', dbData=dbData)
     
 
