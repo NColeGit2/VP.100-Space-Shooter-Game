@@ -64,8 +64,9 @@ def home():
         elif dbData[i][1]<lowest:
     """
         
-    #while len(dbData)>5:
-        
+    while len(dbData)>5:
+        dbData.pop()
+        print(dbData)
     return render_template('index.html', dbData=dbData)
     
 
