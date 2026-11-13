@@ -33,12 +33,10 @@ def home():
     for data in dataTable:
         print(data[0])
         print(data[1])
-    #return render_template('index.html', dbData=dataTable)
     
     connect = sqlite3.connect('database.db')
     connect.execute('CREATE TABLE IF NOT EXISTS leaderboard (username TEXT, score INTEGER)')
     cursor = connect.cursor()
-    cursor.execute('SELECT * FROM leaderboard')
 
     def updateLeaderboard(username, score, insertSQL):
         vals=(f'{username}',f'{score}')
@@ -51,24 +49,16 @@ def home():
     except:
         print("failure")
 
-    cursor.execute('SELECT * FROM leaderboard ORDER BY score DESC')
+    cursor.execute('SELECT * FROM leaderboard ORDER BY score DESC LIMIT 5')
     dbData = cursor.fetchall()
     print(len(dbData))
     print(dbData)
     """
-    lowest=0
-    for i in range(len(dbData)):
-        print(dbData[i][1])
-        if i==0:
-            lowest=dbData[i][1]
-        elif dbData[i][1]<lowest:
-    """
-        
     while len(dbData)>5:
         dbData.pop()
         print(dbData)
+    """
     return render_template('index.html', dbData=dbData)
-    
 
 @app.route('/page2')
 def page2():
